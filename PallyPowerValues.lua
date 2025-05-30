@@ -130,7 +130,7 @@ PallyPower.ClassIcons = {
 };
 
 PallyPower.BlessingIcons = {
-    [-1] = "",
+	[-1] = "",
 	[1] = "Interface\\Icons\\Spell_Holy_GreaterBlessingofWisdom",
 	[2] = "Interface\\Icons\\Spell_Holy_GreaterBlessingofKings",
 	[3] = "Interface\\Icons\\Spell_Magic_GreaterBlessingofKings",
