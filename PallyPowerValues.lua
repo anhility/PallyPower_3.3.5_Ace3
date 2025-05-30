@@ -98,8 +98,9 @@ PallyPower.ClassID = {
 	[8] = "WARLOCK",
 	[9] = "SHAMAN",
 	[10] = "DEATHKNIGHT",
-	[11] = "PET"};
-	
+	[11] = "PET"
+};
+
 PallyPower.ClassToID = {
 	["WARRIOR"] 	= 1,
 	["ROGUE"] 		= 2,
@@ -111,7 +112,8 @@ PallyPower.ClassToID = {
 	["WARLOCK"]		= 8,
 	["SHAMAN"]		= 9,
 	["DEATHKNIGHT"]	= 10,
-	["PET"]			= 11};	
+	["PET"]			= 11
+};
 
 PallyPower.ClassIcons = {
 	[1] = "Interface\\AddOns\\PallyPower\\Icons\\Warrior",
@@ -124,24 +126,26 @@ PallyPower.ClassIcons = {
 	[8] = "Interface\\AddOns\\PallyPower\\Icons\\Warlock",
 	[9] = "Interface\\AddOns\\PallyPower\\Icons\\Shaman",
 	[10] = "Interface\\AddOns\\PallyPower\\Icons\\DeathKnight",
-	[11] = "Interface\\AddOns\\PallyPower\\Icons\\Pet"};
+	[11] = "Interface\\AddOns\\PallyPower\\Icons\\Pet"
+};
 
 PallyPower.BlessingIcons = {
-    [-1] = "",
+	[-1] = "",
 	[1] = "Interface\\Icons\\Spell_Holy_GreaterBlessingofWisdom",
 	[2] = "Interface\\Icons\\Spell_Holy_GreaterBlessingofKings",
 	[3] = "Interface\\Icons\\Spell_Magic_GreaterBlessingofKings",
-	[4] = "Interface\\Icons\\Spell_Holy_GreaterBlessingofSanctuary"};
-	
+	[4] = "Interface\\Icons\\Spell_Holy_GreaterBlessingofSanctuary"
+};
+
 PallyPower.NormalBlessingIcons = {
-    [-1] = "",
+	[-1] = "",
 	[1] = "Interface\\Icons\\Spell_Holy_SealOfWisdom",
 	[2] = "Interface\\Icons\\Spell_Holy_FistOfJustice",
 	[3] = "Interface\\Icons\\Spell_Magic_MageArmor",
 	[4] = "Interface\\Icons\\Spell_Nature_LightningShield"};
 
 PallyPower.AuraIcons = {
-    [-1] = "",
+	[-1] = "",
 	[1] = "Interface\\Icons\\Spell_Holy_DevotionAura",
 	[2] = "Interface\\Icons\\Spell_Holy_AuraOfLight",
 	[3] = "Interface\\Icons\\Spell_Holy_MindSooth",
@@ -185,7 +189,7 @@ PallyPower.RFSpell = GetSpellInfo(25780) --BS["Righteous Fury"]
 PallyPower.HLSpell = GetSpellInfo(635)
 
 PallyPower.Skins = {
-    ["None"] = "Interface\\Tooltips\\UI-Tooltip-Background",
+	["None"] = "Interface\\Tooltips\\UI-Tooltip-Background",
 	["Banto"] = "Interface\\AddOns\\PallyPower\\Skins\\Banto",
 	["BantoBarReverse"] = "Interface\\AddOns\\PallyPower\\Skins\\BantoBarReverse",
 	["Glaze"] = "Interface\\AddOns\\PallyPower\\Skins\\Glaze",
@@ -196,20 +200,20 @@ PallyPower.Skins = {
 };
 
 PallyPower.Edge = 'Interface\\Tooltips\\UI-Tooltip-Border'
---PallyPower.Edge = ''	
+--PallyPower.Edge = ''
 
 PallyPower.Seals = {
-    [0] = "",
-    [1] = GetSpellInfo(20164), -- seal of justice
+	[0] = "",
+	[1] = GetSpellInfo(20164), -- seal of justice
 	[2] = GetSpellInfo(20165), -- seal of light
-    [3] = GetSpellInfo(20166), -- seal of wisdom
-    [4] = GetSpellInfo(21084), -- seal of right
-    [5] = GetSpellInfo(53720), -- seal of martyr
-    [6] = GetSpellInfo(31801), -- seal of vengeance
-    [7] = GetSpellInfo(20375), -- seal of command
-    [8] = GetSpellInfo(53736), -- seal of corruption
-    [9] = GetSpellInfo(31892), -- seal of blood
-    [10] = "",
+	[3] = GetSpellInfo(20166), -- seal of wisdom
+	[4] = GetSpellInfo(21084), -- seal of right
+	[5] = GetSpellInfo(53720), -- seal of martyr
+	[6] = GetSpellInfo(31801), -- seal of vengeance
+	[7] = GetSpellInfo(20375), -- seal of command
+	[8] = GetSpellInfo(53736), -- seal of corruption
+	[9] = GetSpellInfo(31892), -- seal of blood
+	[10] = "",
 };
 
 PallyPower.Auras = {
