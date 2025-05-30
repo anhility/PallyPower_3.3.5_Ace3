@@ -1,7 +1,12 @@
-PallyPower = AceLibrary("AceAddon-2.0"):new("AceConsole-2.0","AceDB-2.0","AceEvent-2.0","AceDebug-2.0")
+--Global private table
+--local _, pp = ...
+
+PallyPower = LibStub("AceAddon-3.0"):NewAddon("PallyPower", "AceBucket-3.0", "AceConsole-3.0", "AceEvent-3.0", "AceTimer-3.0")
 
 local dewdrop = AceLibrary("Dewdrop-2.0")
-local L = AceLibrary("AceLocale-2.2"):new("PallyPower")
+local L = LibStub("AceLocale-3.0"):GetLocale("PallyPower")
+local AceDB = LibStub("AceDB-3.0")
+local AceDebug = LibStub("AceDebug-2.0")
 local tinsert = table.insert
 local tremove = table.remove
 local twipe = table.wipe
@@ -9,6 +14,7 @@ local tsort = table.sort
 local sfind = string.find
 local ssub = string.sub
 local sformat = string.format
+local IsInInstance = IsInInstance
 
 local classlist, classes = {}, {}
 LastCast = {}
@@ -48,11 +54,11 @@ do
 end
 
 function PallyPower:OnInitialize()
-	self:RegisterDB("PallyPowerDB")
-	self:RegisterChatCommand({"/pp"}, self.options)
-	self:RegisterDefaults("profile", PALLYPOWER_DEFAULT_VALUES)
+	self.db = AceDB:New("PallyPowerDB", PALLYPOWER_DEFAULT_VALUES, true)
+	self:RegisterChatCommand("pp", "DewClick")
 	self.player = UnitName("player")
 	self.opt = self.db.profile
+	self.debug = AceDebug
 	self:ScanInventory()
 	self:CreateLayout()
 	if self.opt.skin then
@@ -65,6 +71,7 @@ function PallyPower:OnInitialize()
 
 	self.AutoBuffedList = {}
 	self.PreviousAutoBuffedUnit = nil
+
 end
 
 function PallyPower:OnProfileEnable()
@@ -84,7 +91,8 @@ function PallyPower:OnEnable()
 	self:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
 	self:RegisterBucketEvent("SPELLS_CHANGED", 1, "SPELLS_CHANGED") 
 	self:RegisterBucketEvent({"RAID_ROSTER_UPDATE", "PARTY_MEMBERS_CHANGED", "UNIT_PET"}, 1, "UpdateRoster")
-	self:ScheduleRepeatingEvent("PallyPowerInventoryScan", self.InventoryScan, 60, self)
+	--self:ScheduleRepeatingTimer("PallyPowerInventoryScan", self.InventoryScan, 60, self)
+	self:ScheduleRepeatingTimer(self.InventoryScan, 60, self)
 	self:UpdateRoster()
 	self:BindKeys()
 end
@@ -761,7 +769,7 @@ function PallyPower:NeedsBuff(class, test, playerName)
 end
 
 function PallyPower:ScanSpells()
-	self:Debug("Scan Spells -- begin")
+	self.debug:Debug("Scan Spells -- begin")
 	local _, class=UnitClass("player")
 	if (class == "PALADIN") then
 		local RankInfo = {}
@@ -827,16 +835,16 @@ function PallyPower:ScanSpells()
 		PP_IsPally = false
 	end
 	initalized=true
-	self:Debug("Scan Spells -- end")
+	self.debug:Debug("Scan Spells -- end")
 end
 
 function PallyPower:ScanInventory()
-	self:Debug("Scan Inventory -- begin")
+	self.debug:Debug("Scan Inventory -- begin")
 	if not PP_IsPally then return end
 
 	PP_Symbols = GetItemCount(21177)
 	AllPallys[self.player].symbols = PP_Symbols
-	self:Debug("Scan Inventory -- end")
+	self.debug:Debug("Scan Inventory -- end")
 end
 
 function PallyPower:InventoryScan()
@@ -847,7 +855,7 @@ function PallyPower:InventoryScan()
 end
 
 function PallyPower:SendSelf()
-	self:Debug("Send self -- begin")
+	self.debug:Debug("Send self -- begin")
 	if not initalized then PallyPower:ScanSpells() end
 	if not AllPallys[self.player] then return end
 --    local name = UnitName("player")
@@ -927,11 +935,11 @@ function PallyPower:SendSelf()
 		self:SendMessage("FREEASSIGN NO")
 	end
 	
-	self:Debug("Send self -- end")
+	self.debug:Debug("Send self -- end")
 end
 
 function PallyPower:SendMessage(msg)
-	self:Debug("Sending message")
+	self.debug:Debug("Sending message")
 	local type
 	local inInstance, instanceType = IsInInstance()
 	if inInstance and instanceType == "pvp" then
@@ -981,7 +989,7 @@ function PallyPower:ACTIVE_TALENT_GROUP_CHANGED()
 end
 
 function PallyPower:CHAT_MSG_ADDON(prefix, message, distribution, sender)
-	self:Debug("CHAT_MSG_ADDON event")
+	self.debug:Debug("CHAT_MSG_ADDON event")
 	if prefix == PallyPower.commPrefix and (distribution == "PARTY" or distribution == "RAID" or distribution == "BATTLEGROUND") then
 		if not ChatControl[sender] then
 			ChatControl[sender]={}
@@ -999,7 +1007,7 @@ function PallyPower:CHAT_MSG_ADDON(prefix, message, distribution, sender)
 end
 
 function PallyPower:CHAT_MSG_SYSTEM()
-	self:Debug("CHAT_MSG_SYSTEM event")
+	self.debug:Debug("CHAT_MSG_SYSTEM event")
 	if sfind(arg1, ERR_RAID_YOU_JOINED) then
 		self:SendSelf()
 		self:SendMessage("REQ")
@@ -1233,8 +1241,9 @@ end
 
 function PallyPower:UpdateRoster()
 	-- unregister events
-	self:Debug("Update Roster")
-	self:CancelScheduledEvent("PallyPowerUpdateButtons")
+	self.debug:Debug("Update Roster")
+	--self:CancelScheduledEvent("PallyPowerUpdateButtons")
+	self:CancelTimer(self.InventoryScan)
 
 	local units
 	local num = self:GetNumUnits()
@@ -1347,10 +1356,10 @@ function PallyPower:UpdateRoster()
 
 	if num > 0 and PP_IsPally then
 		-- register events
-		self:ScheduleRepeatingEvent("PallyPowerUpdateButtons", self.ButtonsUpdate, 2.0, self)
+		self:ScheduleRepeatingTimer(self.ButtonsUpdate, 2.0, self)
 	end
 	
-	self:Debug("Update Roster - end")
+	self.debug:Debug("Update Roster - end")
 end
 
 function PallyPower:ScanClass(classID)
@@ -1373,12 +1382,12 @@ function PallyPower:ScanClass(classID)
 end
 
 function PallyPower:CreateLayout()
-	self:Debug("Create Layout -- begin")
+	self.debug:Debug("Create Layout -- begin")
 
 	local p = _G["PallyPowerFrame"]
 	self.Header = p
 
-    self.autoButton = CreateFrame("Button", "PallyPowerAuto", self.Header, "SecureHandlerShowHideTemplate, SecureHandlerEnterLeaveTemplate, SecureHandlerStateTemplate, SecureActionButtonTemplate, PallyPowerAutoButtonTemplate")
+    self.autoButton = CreateFrame("Button", "PallyPowerAuto", self.Header, "SecureHandlerShowHideTemplate, SecureHandlerEnterLeaveTemplate, SecureHandlerStateTemplate, SecureActionButtonTemplate, SecureHandlerBaseTemplate, PallyPowerAutoButtonTemplate")
 	self.autoButton:RegisterForClicks("LeftButtonDown", "RightButtonDown")
 
 	self.rfButton = CreateFrame("Button", "PallyPowerRF", self.Header, "PallyPowerRFButtonTemplate")
@@ -1391,10 +1400,11 @@ function PallyPower:CreateLayout()
 	self.playerButtons = {}
 
 	self.autoButton:Execute([[childs = table.new()]]);
+	--SecureHandlerExecute(self.autoButton, [[childs = table.new()]]);
 	 
 	for cbNum = 1, PALLYPOWER_MAXCLASSES do
 	-- create class buttons
-		local cButton = CreateFrame("Button", "PallyPowerC" .. cbNum, self.Header, "SecureHandlerShowHideTemplate, SecureHandlerEnterLeaveTemplate, SecureHandlerStateTemplate, SecureActionButtonTemplate, PallyPowerButtonTemplate")
+		local cButton = CreateFrame("Button", "PallyPowerC" .. cbNum, self.Header, "SecureHandlerShowHideTemplate, SecureHandlerEnterLeaveTemplate, SecureHandlerStateTemplate, SecureActionButtonTemplate, SecureHandlerBaseTemplate, PallyPowerButtonTemplate")
 		--cButton:SetID(cbNum)
  		-- new show/hide functionality 
  		SecureHandlerSetFrameRef(self.autoButton, "child", cButton)
@@ -1438,7 +1448,7 @@ function PallyPower:CreateLayout()
 		local pButtons = self.playerButtons[cbNum]
         local leadChild
 		for pbNum = 1, PALLYPOWER_MAXPERCLASS do -- create player buttons for each class
-			local pButton = CreateFrame("Button","PallyPowerC".. cbNum .. "P" .. pbNum, UIParent, "SecureHandlerShowHideTemplate, SecureHandlerEnterLeaveTemplate, SecureActionButtonTemplate, PallyPowerPopupTemplate")
+			local pButton = CreateFrame("Button","PallyPowerC".. cbNum .. "P" .. pbNum, UIParent, "SecureHandlerShowHideTemplate, SecureHandlerEnterLeaveTemplate, SecureActionButtonTemplate, SecureHandlerBaseTemplate, PallyPowerPopupTemplate")
 			--pButton:SetID(cbNum)
 			pButton:SetParent(cButton)
 			  
@@ -1485,7 +1495,7 @@ function PallyPower:CreateLayout()
 	end
 
 	self:UpdateLayout()
-	self:Debug("Create Layout -- end")
+	self.debug:Debug("Create Layout -- end")
 end
 
 function PallyPower:CountClasses()
@@ -1500,7 +1510,7 @@ function PallyPower:CountClasses()
 end
 
 function PallyPower:UpdateLayout()
-	self:Debug("Update Layout -- begin")
+	self.debug:Debug("Update Layout -- begin")
 	if InCombatLockdown() then return false end
 	
 	PallyPowerFrame:SetScale(self.opt.buffscale)
@@ -1824,10 +1834,14 @@ function PallyPower:UpdateLayout()
 		end
 	end
 
+	if not self.opt.flashBuffAutoButtons then
+		self:StopAllAnimation()
+	end
+
 	self:ButtonsUpdate()
 	self:UpdateAnchor(displayedButtons)
 
-	self:Debug("Update Layout -- end")
+	self.debug:Debug("Update Layout -- end")
 end
 
 function PallyPower:SetButton(baseName)
@@ -1871,8 +1885,109 @@ function PallyPower:SetPButton(baseName)
 	end
 end
 
+-- NoM0Re Edit
+function PallyPower:GetClassColor(classFilename, fallback)
+    local color = (CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS)[classFilename]
+    if color and color.r and color.g and color.b then
+        return { r = color.r, g = color.g, b = color.b, a = 1}
+    end
+	if classFilename == "PET" then
+		return { r = 1, g = 1, b = 0, a = 1}
+	end
+    -- Fallback
+    return fallback
+end
+
+local AnimatedButtons = {}
+local startTimeAnimation
+local AnimationUpdateFrame = CreateFrame("Frame")
+local hsvFrame = CreateFrame("Colorselect")
+
+local function GetHSVTransition(perc, r1, g1, b1, a1, r2, g2, b2, a2)
+	--get hsv color for colorA
+	hsvFrame:SetColorRGB(r1, g1, b1)
+	local h1, s1, v1 = hsvFrame:GetColorHSV() -- hue, saturation, value
+	--get hsv color for colorB
+	hsvFrame:SetColorRGB(r2, g2, b2)
+	local h2, s2, v2 = hsvFrame:GetColorHSV() -- hue, saturation, value
+	local h3 = floor(h1 - (h1 - h2) * perc)
+	-- find the shortest arc through the color circle, then interpolate
+	local diff = h2 - h1
+	if diff < -180 then
+		diff = diff + 360
+	elseif diff > 180 then
+		diff = diff - 360
+	end
+	h3 = (h1 + perc * diff) % 360
+	local s3 = s1 - ( s1 - s2 ) * perc
+	local v3 = v1 - ( v1 - v2 ) * perc
+	--get the RGB values of the new color
+	hsvFrame:SetColorHSV(h3, s3, v3)
+	local r, g, b = hsvFrame:GetColorRGB()
+	--interpolate alpha
+	local a = a1 - ( a1 - a2 ) * perc
+	--return the new color
+	return r, g, b, a
+end
+
+local function UpdateFrameColor(progress, frame)
+	local r1, g1, b1, a1 = PallyPower.opt.cBuffNeedAll.r, PallyPower.opt.cBuffNeedAll.g, PallyPower.opt.cBuffNeedAll.b, PallyPower.opt.cBuffNeedAll.t -- Start-Color White
+	local r2, g2, b2, a2 = 1, 0, 0, 1  -- End-Color Red
+	local r, g, b, a = GetHSVTransition(progress, r1, g1, b1, a1, r2, g2, b2, a2)
+	frame:SetBackdropColor(r, g, b, a)
+end
+
+local function GetAnimationFrameProgress(startTime)
+	local currentTime = GetTime()
+	local duration = 0.5
+	return (currentTime - startTime) / duration
+end
+
+local function UpdateFrame()
+	local progress = GetAnimationFrameProgress(startTimeAnimation)
+	for _, frame in ipairs(AnimatedButtons) do
+		UpdateFrameColor(progress, frame)
+	end
+	if progress >= 1 then
+		startTimeAnimation = GetTime()
+	end
+end
+
+local function StartAnimation(button)
+	if AnimatedButtons and next(AnimatedButtons) == nil then
+		startTimeAnimation = GetTime()
+		table.insert(AnimatedButtons, button)
+		AnimationUpdateFrame:SetScript("OnUpdate", UpdateFrame)
+	else
+		for _, btn in ipairs(AnimatedButtons) do
+			if btn:GetName() == button:GetName() then
+				return
+			end
+		end
+        table.insert(AnimatedButtons, button)
+	end
+end
+
+local function StopAnimation(button)
+    for i, btn in ipairs(AnimatedButtons) do
+        if btn:GetName() == button:GetName() then
+			table.remove(AnimatedButtons, i)
+            break
+        end
+    end
+
+    if AnimatedButtons and next(AnimatedButtons) == nil then
+        AnimationUpdateFrame:SetScript("OnUpdate", nil)
+    end
+end
+
+function PallyPower:StopAllAnimation()
+	AnimatedButtons = {}
+	AnimationUpdateFrame:SetScript("OnUpdate", nil)
+end
+-- NoM0Re Edit End
 function PallyPower:UpdateButton(button, baseName, classID)
---    self:Print("Update Button: %s, Class: %s", baseName, classID)
+	--self:Print("Update Button: %s, Class: %s", baseName, classID)
 	local button = _G[baseName]
 	local classIcon = _G[baseName.."ClassIcon"]
 	local buffIcon = _G[baseName.."BuffIcon"]
@@ -1926,19 +2041,68 @@ function PallyPower:UpdateButton(button, baseName, classID)
 	else
 		text:SetText("")
 	end
+	-- NoM0Re Edit
+	if (not InCombatLockdown()) then
+		local unitid, _, gspell = PallyPower:GetUnitAndSpellSmart(classID, "LeftButton")
 
-	if (nhave == 0) then
-		self:ApplyBackdrop(button, self.opt.cBuffNeedAll)
-	elseif (nneed > 0) then
- 		self:ApplyBackdrop(button, self.opt.cBuffNeedSome)
-	elseif (nspecial > 0) then
-  		self:ApplyBackdrop(button, self.opt.cBuffNeedSpecial)
-	else
-  		self:ApplyBackdrop(button, self.opt.cBuffGood)
+		if not unitid then
+			gspell = "qq"
+		end
+
+		-- left click (find first nearby player and do 15 minute buff)
+		button:SetAttribute("type", "spell")
+		button:SetAttribute("spell1", gspell)
+		button:SetAttribute("unit1", unitid)
 	end
 
+	local flash = self.opt.flashBuffAutoButtons
+	local instanced = IsInInstance()
+	if (nhave == 0) then
+		if flash then
+			if instanced then
+				StartAnimation(button)
+			else
+				StopAnimation(button)
+				self:ApplyBackdrop(button, self.opt.cBuffNeedAll)
+			end
+		else
+			self:ApplyBackdrop(button, self.opt.cBuffNeedAll)
+		end
+	elseif (nneed > 0) then
+		if flash then
+			if instanced then
+				StartAnimation(button)
+			else
+				StopAnimation(button)
+				self:ApplyBackdrop(button, self.opt.cBuffNeedSome)
+			end
+		else
+			self:ApplyBackdrop(button, self.opt.cBuffNeedSome)
+		end
+	elseif (nspecial > 0) then
+		if flash then
+			if instanced then
+				StartAnimation(button)
+			else
+				StopAnimation(button)
+				self:ApplyBackdrop(button, self.opt.cBuffNeedSpecial)
+			end
+		else
+			self:ApplyBackdrop(button, self.opt.cBuffNeedSpecial)
+		end
+	else
+		if flash then
+			StopAnimation(button)
+		end
+		if self.opt.classColor then
+			self:ApplyBackdrop(button, self:GetClassColor(self.ClassID[classID], self.opt.cBuffGood))
+		else
+			self:ApplyBackdrop(button, self.opt.cBuffGood)
+		end
+	end
+	-- NoM0Re Edit End
 	return classExpire, classDuration, specialExpire, specialDuration, nhave, nneed, nspecial
---    self:Print("Update button -- end")
+	--self:Print("Update button -- end")
 end
 
 function PallyPower:GetSeverityColor(percent)
@@ -2062,8 +2226,14 @@ function PallyPower:UpdatePButton(button, baseName, classID, playerID)
 		--elseif (nneed == 1) then
 		--    button:SetBackdropColor(1.0, 1.0, 0.5, 0.5)
 		else
-   			self:ApplyBackdrop(button, self.opt.cBuffGood)
-		end	
+			-- NoM0Re Edit
+			if self.opt.classColor then
+				self:ApplyBackdrop(button, self:GetClassColor(self.ClassID[classID], self.opt.cBuffGood))
+			else
+				self:ApplyBackdrop(button, self.opt.cBuffGood)
+			end
+			-- NoM0Re Edit End
+		end
 
 		if unit.hasbuff then
 			buffIcon:SetAlpha(1)
@@ -2095,6 +2265,12 @@ function PallyPower:UpdatePButton(button, baseName, classID, playerID)
 			end
 		end
 		name:SetText(unit.name)
+
+		if self.opt.nameClassColor then
+			self:ApplyTextColor(name, PallyPower:GetClassColor(self.ClassID[classID], {r=1, g=1, b=1, t=1}))
+		else
+			self:ApplyTextColor(name, {r=1, g=1, b=1, t=1})
+		end
 	else
 		self:ApplyBackdrop(button, self.opt.cBuffGood)
 		buffIcon:SetAlpha(0)
@@ -2134,16 +2310,49 @@ function PallyPower:ButtonsUpdate()
 	local time = _G["PallyPowerAutoTime"]
 	local time2 = _G["PallyPowerAutoTime2"]
 	local text = _G["PallyPowerAutoText"]
+	-- NoM0Re Edit
+	local flash = self.opt.flashBuffAutoButtons
+	local instanced = IsInInstance()
 	if (sumnhave == 0) then
-  		self:ApplyBackdrop(autobutton, self.opt.cBuffNeedAll)
+		if flash then
+			if instanced then
+				StartAnimation(autobutton)
+			else
+				StopAnimation(autobutton)
+				self:ApplyBackdrop(autobutton, self.opt.cBuffNeedSome)
+			end
+		else
+			self:ApplyBackdrop(autobutton, self.opt.cBuffNeedSome)
+		end
 	elseif (sumnneed > 0) then
-  		self:ApplyBackdrop(autobutton, self.opt.cBuffNeedSome)
+		if flash then
+			if instanced then
+				StartAnimation(autobutton)
+			else
+				StopAnimation(autobutton)
+				self:ApplyBackdrop(autobutton, self.opt.cBuffNeedSome)
+			end
+		else
+			self:ApplyBackdrop(autobutton, self.opt.cBuffNeedSome)
+		end
 	elseif (sumnspecial > 0) then
-		self:ApplyBackdrop(autobutton, self.opt.cBuffNeedSpecial)
+		if flash then
+			if instanced then
+				StartAnimation(autobutton)
+			else
+				StopAnimation(autobutton)
+				self:ApplyBackdrop(autobutton, self.opt.cBuffNeedSpecial)
+			end
+		else
+			self:ApplyBackdrop(autobutton, self.opt.cBuffNeedSpecial)
+		end
 	else
-  		self:ApplyBackdrop(autobutton, self.opt.cBuffGood)
+		if flash then
+			StopAnimation(autobutton)
+		end
+		self:ApplyBackdrop(autobutton, self.opt.cBuffGood)
 	end
-	
+	-- NoM0Re Edit End
 	time:SetText(self:FormatTime(minClassExpire))
 	time:SetTextColor(self:GetSeverityColor(minClassExpire and minClassDuration and (minClassExpire/minClassDuration) or 0))
 	time2:SetText(self:FormatTime(minSpecialExpire))
@@ -2329,7 +2538,7 @@ function PallyPower:ClickHandle(button, mousebutton)
 			if (self.opt.display.LockBuffBars) then
 				LOCK_ACTIONBAR = "0"
 			end
-			self:ScheduleEvent("PallyPowerTemporaryUnlock", RelockActionBars, 30)
+			self:ScheduleTimer(RelockActionBars, 30)
 		end
 	button:SetChecked(self.opt.display.frameLocked)
 	end
@@ -2538,6 +2747,11 @@ function PallyPower:ApplyBackdrop(button, preset)
 	button:SetBackdropColor(preset["r"], preset["g"], preset["b"], preset["t"])
 end
 
+-- text coloring: preset
+function PallyPower:ApplyTextColor(fontstring, preset)
+	fontstring:SetTextColor(preset["r"], preset["g"], preset["b"], preset["t"])
+end
+
 function PallyPower:SetSeal(seal)
 	self.opt.seal = seal
 end
@@ -2555,7 +2769,7 @@ function PallyPower:SealCycle()
 	    cur = self.opt.seal
 	    for test=cur+1, 10 do
 	    	cur = test
-	    	if GetSpellInfo(PallyPower.Seals[cur]) then 
+	    	if GetSpellInfo(PallyPower.Seals[cur]) then
 				do break end
 			end
 	    end

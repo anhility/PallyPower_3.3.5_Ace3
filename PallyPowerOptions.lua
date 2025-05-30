@@ -1,10 +1,14 @@
-local L = AceLibrary("AceLocale-2.2"):new("PallyPower");
+--Global private table
+--local _, pp = ...
+
+local L = LibStub("AceLocale-3.0"):GetLocale("PallyPower")
 
 PallyPower.options = {
 	type = "group",
+	handler = PallyPower,
 	args = {
 		config = {
-		        name = L["BAS"],
+			name = L["BAS"],
 			type = "execute",
 			desc = L["BAS_DESC"],
 			func = function() PallyPowerConfig_Toggle() end,
@@ -33,13 +37,13 @@ PallyPower.options = {
 			max = 1.5,
 			step = 0.05,
 			get = "ConfigScale",
-			set = "ConfigScale",	
+			set = "ConfigScale",
 		},
 		reset = {
 			name = L["RESET"],
 			type = "execute",
 			desc = L["RESET_DESC"],
-			func = function() PallyPower:Reset() end,			
+			func = function() PallyPower:Reset() end,
 			},
 		smartbuff = {
 			name = L["SBUFF"],
@@ -48,7 +52,7 @@ PallyPower.options = {
 			get = "ToggleSmartBuffs",
 			set = "ToggleSmartBuffs",
 			map = {
-				[false]=L["DISABLED"], 
+				[false]=L["DISABLED"],
 				[true] = L["ENABLED"]
 			},
 		},
@@ -59,7 +63,7 @@ PallyPower.options = {
 			get = "ToggleSmartPets",
 			set = "ToggleSmartPets",
 			map = {
-				[false]=L["DISABLED"], 
+				[false]=L["DISABLED"],
 				[true] = L["ENABLED"]
 			},
 		},
@@ -74,7 +78,6 @@ PallyPower.options = {
 				[true] = L["ENABLED"]
 			},
 		},
-
 		display = {
 			name = L["DISP"],
 			type = "group",
@@ -120,7 +123,7 @@ PallyPower.options = {
 					max = 11,
 					step = 1,
 					get = "displayColumns",
-					set = "displayColumns",	
+					set = "displayColumns",
 				},
 				rows = {
 					name = L["DISPROWS"],
@@ -130,7 +133,7 @@ PallyPower.options = {
 					max = 11,
 					step = 1,
 					get = "displayRows",
-					set = "displayRows",	
+					set = "displayRows",
 				},
 				gapping = {
 					name = L["DISPGAP"],
@@ -140,7 +143,7 @@ PallyPower.options = {
 					max = 5,
 					step = 1,
 					get = "displayGapping",
-					set = "displayGapping",	
+					set = "displayGapping",
 				},
 				edges = {
 					name = L["DISPEDGES"],
@@ -149,7 +152,7 @@ PallyPower.options = {
 					get = "ToggleEdges",
 					set = "ToggleEdges",
 					map = {
-						[false]= L["DISABLED"], 
+						[false]= L["DISABLED"],
 						[true] = L["ENABLED"]
 					},
 				},
@@ -160,23 +163,23 @@ PallyPower.options = {
 					get = "displayAlignClassButtons",
 					set = "displayAlignClassButtons",
 					validate = {
-							"1", 
-							"3", 
-							"7", 
+							"1",
+							"3",
+							"7",
 							"9"},
 				},
 				palign = {
 					name = L["DISPPL"],
 					type = "text",
-					desc = L["DISPCL_DESC"],
+					desc = L["DISPPL_DESC"],
 					get = "displayAlignPlayerButtons",
 					set = "displayAlignPlayerButtons",
-					validate = {	
-							"top", 
-							"right", 
-							"bottom", 
-							"left", 
-							"compact-left", 
+					validate = {
+							"top",
+							"right",
+							"bottom",
+							"left",
+							"compact-left",
 							"compact-right",
 					},
 				},
@@ -187,7 +190,7 @@ PallyPower.options = {
 					get = "TogglePlayerButtons",
 					set = "TogglePlayerButtons",
 					map = {
-						[false]=L["DISABLED"], 
+						[false]=L["DISABLED"],
 						[true] = L["ENABLED"]
 					},
 				},
@@ -202,6 +205,39 @@ PallyPower.options = {
 						[true] = L["ENABLED"]
 					},
 				},
+				blink = {
+					name = L["BLINKPA"],
+					type = "toggle",
+					desc = L["BLINKPA_DESC"],
+					get = "ToggleFlashBuffAutoButtons",
+					set = "ToggleFlashBuffAutoButtons",
+					map = {
+						[false]=L["DISABLED"],
+						[true] = L["ENABLED"]
+					},
+				},
+				classcolor = {
+					name = L["CLASSC"],
+					type = "toggle",
+					desc = L["CLASSC_DESC"],
+					get = "ToggleClassColor",
+					set = "ToggleClassColor",
+					map = {
+						[false]=L["DISABLED"],
+						[true] = L["ENABLED"]
+					},
+				},
+				nameclasscolor = {
+					name = L["CLASSCN"],
+					type = "toggle",
+					desc = L["CLASSCN_DESC"],
+					get = "ToggleNameClassColor",
+					set = "ToggleNameClassColor",
+					map = {
+						[false]=L["DISABLED"],
+						[true] = L["ENABLED"]
+					},
+				},
 				handle = {
 					name = L["HIDEDH"],
 					type = "toggle",
@@ -209,7 +245,7 @@ PallyPower.options = {
 					get = "ToggleDragHandle",
 					set = "ToggleDragHandle",
 					map = {
-						[false]=L["DISABLED"], 
+						[false]=L["DISABLED"],
 						[true] = L["ENABLED"]
 					},
 				},
@@ -220,7 +256,7 @@ PallyPower.options = {
 					get = "ToggleShowParty",
 					set = "ToggleShowParty",
 					map = {
-						[false]=L["DISABLED"], 
+						[false]=L["DISABLED"],
 						[true] = L["ENABLED"]
 					},
 				},
@@ -231,7 +267,7 @@ PallyPower.options = {
 					get = "ToggleShowSingle",
 					set = "ToggleShowSingle",
 					map = {
-						[false]=L["DISABLED"], 
+						[false]=L["DISABLED"],
 						[true] = L["ENABLED"]
 					},
 				},
@@ -478,6 +514,24 @@ function PallyPower:ToggleClassButtons(value)
 	if type(value) == "nil" then return self.opt.hideClassButtons end
 	self.opt.hideClassButtons = value;
 	PallyPower:UpdateLayout();	
+end
+
+function PallyPower:ToggleFlashBuffAutoButtons(value)
+	if type(value) == "nil" then return self.opt.flashBuffAutoButtons end
+	self.opt.flashBuffAutoButtons = value;
+	PallyPower:UpdateLayout();
+end
+
+function PallyPower:ToggleClassColor(value)
+	if type(value) == "nil" then return self.opt.classColor end
+	self.opt.classColor = value;
+	PallyPower:UpdateLayout();
+end
+
+function PallyPower:ToggleNameClassColor(value)
+	if type(value) == "nil" then return self.opt.nameClassColor end
+	self.opt.nameClassColor = value;
+	PallyPower:UpdateLayout();
 end
 
 function PallyPower:ToggleAutoButton(value)

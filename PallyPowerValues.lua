@@ -1,5 +1,7 @@
-local L = AceLibrary("AceLocale-2.2"):new("PallyPower");
---local BS = AceLibrary("Babble-Spell-2.2")
+--Global private table
+--local _, pp = ...
+
+local L = LibStub("AceLocale-3.0"):GetLocale("PallyPower")
 
 PallyPower.commPrefix = "PLPWR";
 
@@ -12,68 +14,73 @@ PALLYPOWER_MAXAURAS = 7;
 PallyPower.CONFIG_DRAGHANDLE = L["DRAGHANDLE"];
 
 PALLYPOWER_DEFAULT_VALUES = {
-	buffscale = 0.90,
-	configscale = 0.90,
-	smartbuffs = true,
-	smartpets = true,
-	greaterbuffs = true,
-	rfbuff = true,
-	auras = true,
-	extras = false,
-	autobuff = {
-		autokey1 = ",",
-		autokey2 = "CTRL-,",
-		autobutton = true,
-		waitforpeople = true,
-	},
-	display = {
-		-- buttons
-		rows = 11,
-		columns = 1,
-		gapping = 2,
-		buttonWidth = 100,
-		buttonHeight = 34,
-		alignClassButtons = "9",
-		alignPlayerButtons = "compact-left",
-		edges = true,
-        frameLocked = false,
-		hideDragHandle = false,
-		hidePlayerButtons = false,
-		hideClassButtons = false,
-		PlainButtons = false,
-		HideKeyText = false,
-		HideCount = false,
-        LockBuffBars = false,
-        HideCountText = false,
-		HideTimerText = false,
-	},
-	ShowInParty = true,
-	ShowWhenSingle = true,
-	skin = "Smooth",
-	cBuffNeedAll     = {r = 1.0, g = 0.0, b = 0.0, t = 0.5},
- 	cBuffNeedSome    = {r = 1.0, g = 1.0, b = 0.5, t = 0.5},
- 	cBuffNeedSpecial = {r = 0.0, g = 0.0, b = 1.0, t = 0.5},
-	cBuffGood        = {r = 0.0, g = 0.7, b = 0.0, t = 0.5},
-	sets = { 
-		["primary"] = {
-						seal = 0, 	-- wisdom
-						aura = 1, 	-- devotion
-						rf = false, -- RF off
-						buffs = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,}
-					},
-		["secondary"] = {
-						seal = 0, 	-- wisdom
-						aura = 1, 	-- devotion
-						rf = false, -- RF off
-						buffs = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,}
-					},
-	},
-	-- default assignments
-	seal = 0,
-	aura = 1,
-	disabled = false,
-	layout = "Standard",
-	};
+	profile = {
+		buffscale = 0.75,
+		configscale = 0.65,
+		smartbuffs = true,
+		smartpets = true,
+		greaterbuffs = true,
+		rfbuff = false,
+		auras = false,
+		extras = false,
+		autobuff = {
+			autokey1 = ",",
+			autokey2 = "CTRL-,",
+			autobutton = true,
+			waitforpeople = false,
+		},
+		display = {
+			-- buttons
+			rows = 11,
+			columns = 1,
+			gapping = -1,
+			buttonWidth = 100,
+			buttonHeight = 34,
+			alignClassButtons = "9",
+			alignPlayerButtons = "compact-left",
+			edges = true,
+			frameLocked = false,
+			hideDragHandle = false,
+			hidePlayerButtons = false,
+			hideClassButtons = true,
+			classColor = false,
+			nameClassColor = false,
+			flashBuffAutoButtons = true,
+			PlainButtons = false,
+			HideKeyText = false,
+			HideCount = false,
+			LockBuffBars = false,
+			HideCountText = false,
+			HideTimerText = false,
+		},
+		ShowInParty = true,
+		ShowWhenSingle = true,
+		skin = "Smooth",
+		cBuffNeedAll     = {r = 1.0, g = 0.0, b = 0.0, t = 0.5},
+		cBuffNeedSome    = {r = 1.0, g = 1.0, b = 0.5, t = 0.5},
+		cBuffNeedSpecial = {r = 0.0, g = 0.0, b = 1.0, t = 0.5},
+		cBuffGood        = {r = 0.0, g = 0.7, b = 0.0, t = 0.5},
+		sets = {
+			["primary"] = {
+							seal = 1, 	-- wisdom
+							aura = 0, 	-- devotion
+							rf = false, -- RF off
+							buffs = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,}
+						},
+			["secondary"] = {
+							seal = 1, 	-- wisdom
+							aura = 0, 	-- devotion
+							rf = false, -- RF off
+							buffs = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,}
+						},
+		},
+		-- default assignments
+		seal = 1,
+		aura = 1,
+		disabled = false,
+		layout = "Layout 1",
+	}
+};
 
 PallyPower_Credits1 = "Pally Power - by Aznamir";
 --PallyPower_Credits2 = "Version "..PallyPower_Version;
@@ -207,8 +214,8 @@ PallyPower.Seals = {
 
 PallyPower.Auras = {
 	[0] = "",
-	[1] = GetSpellInfo(465), --BS["Devotion Aura"],
-	[2] = GetSpellInfo(7294), --BS["Retribution Aura"],
+	[1] = GetSpellInfo(00465), --BS["Devotion Aura"],
+	[2] = GetSpellInfo(07294), --BS["Retribution Aura"],
 	[3] = GetSpellInfo(19746), --BS["Concentration Aura"],
 	[4] = GetSpellInfo(19876), --BS["Shadow Resistance Aura"],
 	[5] = GetSpellInfo(19888), --BS["Frost Resistance Aura"],
