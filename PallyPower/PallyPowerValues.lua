@@ -166,23 +166,23 @@ PALLYPOWER_ASSIGNMENTS2 = L["PP_RAS2"];
 -- get translations directly
 PallyPower.Spells = {
 	[0] = "",
-	[1] = GetSpellInfo(19742), --BS["Blessing of Wisdom"],
-	[2] = GetSpellInfo(19740), --BS["Blessing of Might"],
-	[3] = GetSpellInfo(20217), --BS["Blessing of Kings"],
-	[4] = GetSpellInfo(20911), --BS["Blessing of Sanctuary"],
+	[1] = GetSpellInfo(1119742), --BS["Blessing of Wisdom"],
+	[2] = GetSpellInfo(1119740), --BS["Blessing of Might"],
+	[3] = GetSpellInfo(1120217), --BS["Blessing of Kings"],
+	[4] = GetSpellInfo(1120911), --BS["Blessing of Sanctuary"],
 };
 
 PallyPower.GSpells = {
 	[0] = "",
-	[1] = GetSpellInfo(25894), --BS["Greater Blessing of Wisdom"],
-	[2] = GetSpellInfo(25782), --BS["Greater Blessing of Might"],
-	[3] = GetSpellInfo(25898), --BS["Greater Blessing of Kings"],
-	[4] = GetSpellInfo(25899), --BS["Greater Blessing of Sanctuary"],
+	[1] = GetSpellInfo(1125894), --BS["Greater Blessing of Wisdom"],
+	[2] = GetSpellInfo(1125782), --BS["Greater Blessing of Might"],
+	[3] = GetSpellInfo(1125898), --BS["Greater Blessing of Kings"],
+	[4] = GetSpellInfo(1125899), --BS["Greater Blessing of Sanctuary"],
 };
 
-PallyPower.RFSpell = GetSpellInfo(25780) --BS["Righteous Fury"]
+PallyPower.RFSpell = GetSpellInfo(1125780) --BS["Righteous Fury"]
 
-PallyPower.HLSpell = GetSpellInfo(635)
+PallyPower.HLSpell = GetSpellInfo(1100635)
 
 PallyPower.Skins = {
     ["None"] = "Interface\\Tooltips\\UI-Tooltip-Background",
@@ -200,27 +200,27 @@ PallyPower.Edge = 'Interface\\Tooltips\\UI-Tooltip-Border'
 
 PallyPower.Seals = {
     [0] = "",
-    [1] = GetSpellInfo(20164), -- seal of justice
-	[2] = GetSpellInfo(20165), -- seal of light
-    [3] = GetSpellInfo(20166), -- seal of wisdom
-    [4] = GetSpellInfo(21084), -- seal of right
-    [5] = GetSpellInfo(53720), -- seal of martyr
-    [6] = GetSpellInfo(31801), -- seal of vengeance
-    [7] = GetSpellInfo(20375), -- seal of command
-    [8] = GetSpellInfo(53736), -- seal of corruption
-    [9] = GetSpellInfo(31892), -- seal of blood
+    [1] = GetSpellInfo(1120164), -- seal of justice
+	[2] = GetSpellInfo(1120165), -- seal of light
+    [3] = GetSpellInfo(1120166), -- seal of wisdom
+    [4] = GetSpellInfo(1121084), -- seal of right
+    [5] = GetSpellInfo(1153720), -- seal of martyr
+    [6] = GetSpellInfo(1131801), -- seal of vengeance
+    [7] = GetSpellInfo(1120375), -- seal of command
+    [8] = GetSpellInfo(1153736), -- seal of corruption
+    [9] = GetSpellInfo(1131892), -- seal of blood
     [10] = "",
 };
 
 PallyPower.Auras = {
 	[0] = "",
-	[1] = GetSpellInfo(00465), --BS["Devotion Aura"],
-	[2] = GetSpellInfo(07294), --BS["Retribution Aura"],
-	[3] = GetSpellInfo(19746), --BS["Concentration Aura"],
-	[4] = GetSpellInfo(19876), --BS["Shadow Resistance Aura"],
-	[5] = GetSpellInfo(19888), --BS["Frost Resistance Aura"],
-	[6] = GetSpellInfo(19891), --BS["Fire Resistance Aura"],
-	[7] = GetSpellInfo(32223), --BS["Crusader Aura"],
+	[1] = GetSpellInfo(1100465), --BS["Devotion Aura"],
+	[2] = GetSpellInfo(1107294), --BS["Retribution Aura"],
+	[3] = GetSpellInfo(1119746), --BS["Concentration Aura"],
+	[4] = GetSpellInfo(1119876), --BS["Shadow Resistance Aura"],
+	[5] = GetSpellInfo(1119888), --BS["Frost Resistance Aura"],
+	[6] = GetSpellInfo(1119891), --BS["Fire Resistance Aura"],
+	[7] = GetSpellInfo(1132223), --BS["Crusader Aura"],
 };
 -- Buff templates
 PallyPower.Templates={
