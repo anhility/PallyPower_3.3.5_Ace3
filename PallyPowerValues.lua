@@ -87,7 +87,7 @@ PallyPower_Credits1 = "Pally Power - by Aznamir";
 
 PallyPower.BuffBarTitle = "Pally Buffs (%d)";
 
-PallyPower.ClassID = { 
+PallyPower.ClassID = {
 	[1] = "WARRIOR",
 	[2] = "ROGUE",
 	[3] = "PRIEST",
@@ -131,18 +131,27 @@ PallyPower.ClassIcons = {
 
 PallyPower.BlessingIcons = {
 	[-1] = "",
-	[1] = "Interface\\Icons\\Spell_Holy_GreaterBlessingofWisdom",
-	[2] = "Interface\\Icons\\Spell_Holy_GreaterBlessingofKings",
-	[3] = "Interface\\Icons\\Spell_Magic_GreaterBlessingofKings",
-	[4] = "Interface\\Icons\\Spell_Holy_GreaterBlessingofSanctuary"
+	[1] = "Interface\\Icons\\Spell_Holy_GreaterBlessingofWisdom", --Greater Blessing of Wisdom
+	[2] = "Interface\\Icons\\Spell_Holy_GreaterBlessingofKings", --Greater Blessing of Might
+	[3] = "Interface\\Icons\\Spell_Magic_GreaterBlessingofKings", --Greater Blessing of Kings
+	[4] = "Interface\\Icons\\Spell_Holy_GreaterBlessingofSanctuary" --Greater Blessing of Sanctuary
 };
 
 PallyPower.NormalBlessingIcons = {
 	[-1] = "",
-	[1] = "Interface\\Icons\\Spell_Holy_SealOfWisdom",
-	[2] = "Interface\\Icons\\Spell_Holy_FistOfJustice",
-	[3] = "Interface\\Icons\\Spell_Magic_MageArmor",
-	[4] = "Interface\\Icons\\Spell_Nature_LightningShield"
+	[1] = "Interface\\Icons\\Spell_Holy_SealOfWisdom", --Blessing of Wisdom
+	[2] = "Interface\\Icons\\Spell_Holy_FistOfJustice", --Blessing of Might
+	[3] = "Interface\\Icons\\Spell_Magic_MageArmor", --Blessing of Kings
+	[4] = "Interface\\Icons\\Spell_Nature_LightningShield" --Blessing of Sanctuary
+};
+
+--Ascension's Bronzebeard specific blessings
+PallyPower.SanctifiedBlessingIcons = {
+	[-1] = "",
+	[1] = "Interface\\Icons\\Spell_Magic_SanctifiedBlessingofWisdom", --Sanctified Blessing of Wisdom
+	[2] = "Interface\\Icons\\Spell_Magic_SanctifiedBlessingofMight", --Sanctified Blessing of Might
+	[3] = "Interface\\Icons\\Spell_Magic_SanctifiedBlessingofKings", --Sanctified Blessing of Kings
+	[4] = "Interface\\Icons\\Spell_Magic_SanctifiedBlessingofSanctuary" --Sanctified Blessing of Sanctuary
 };
 
 PallyPower.AuraIcons = {
@@ -183,6 +192,15 @@ PallyPower.GSpells = {
 	[2] = GetSpellInfo(1125782), --BS["Greater Blessing of Might"],
 	[3] = GetSpellInfo(1125898), --BS["Greater Blessing of Kings"],
 	[4] = GetSpellInfo(1125899), --BS["Greater Blessing of Sanctuary"],
+};
+
+-- Ascension's Bronzebeard specific blessings
+PallyPower.SSpells = {
+	[0] = "",
+	[1] = GetSpellInfo(1325894), --BS["Sanctified Blessing of Wisdom"],
+	[2] = GetSpellInfo(1325782), --BS["Sanctified Blessing of Might"],
+	[3] = GetSpellInfo(1325898), --BS["Sanctified Blessing of Kings"],
+	[4] = GetSpellInfo(1325899), --BS["Sanctified Blessing of Sanctuary"],
 };
 
 PallyPower.RFSpell = GetSpellInfo(1125780) --BS["Righteous Fury"]
